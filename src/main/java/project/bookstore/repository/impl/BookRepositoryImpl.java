@@ -1,14 +1,12 @@
 package project.bookstore.repository.impl;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
-import project.bookstore.exception.EntityNotFoundException;
+import project.bookstore.exception.DataProcessingException;
 import project.bookstore.model.Book;
 import project.bookstore.repository.BookRepository;
 
@@ -41,25 +39,20 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(Book.class);
-            Root<Book> root = criteriaQuery.from(Book.class);
-            return session.createQuery(criteriaQuery).getResultList();
+            return session.createQuery("FROM Book", Book.class).getResultList();
         } catch (Exception e) {
-            throw new EntityNotFoundException("Can't found books ", e);
+            throw new DataProcessingException("Can't found books ", e);
         }
     }
 
     @Override
-    public Book getBookById(Long id) {
+    public Optional<Book> findBookById(Long id) {
         try (Session session = sessionFactory.openSession()) {
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(Book.class);
-            Root<Book> root = criteriaQuery.from(Book.class);
-            criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
-            return session.createQuery(criteriaQuery).getSingleResult();
+            return Optional.ofNullable(session.createQuery(
+                    "FROM Book WHERE id = :id", Book.class)
+                    .setParameter("id", id).uniqueResult());
         } catch (Exception e) {
-            throw new EntityNotFoundException("Can't found book by id: " + id, e);
+            throw new DataProcessingException("Can't found book by id: " + id, e);
         }
     }
 }
