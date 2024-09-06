@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+import project.bookstore.exception.EntityNotFoundException;
 import project.bookstore.model.Book;
 import project.bookstore.repository.BookRepository;
 
@@ -38,14 +39,27 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List findAll() {
+    public List<Book> findAll() {
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(Book.class);
             Root<Book> root = criteriaQuery.from(Book.class);
             return session.createQuery(criteriaQuery).getResultList();
         } catch (Exception e) {
-            throw new RuntimeException("Cannot find all books", e);
+            throw new EntityNotFoundException("Can't found books ", e);
+        }
+    }
+
+    @Override
+    public Book getBookById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(Book.class);
+            Root<Book> root = criteriaQuery.from(Book.class);
+            criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
+            return session.createQuery(criteriaQuery).getSingleResult();
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Can't found book by id: " + id, e);
         }
     }
 }
