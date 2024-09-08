@@ -13,8 +13,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@SQLDelete(sql = "UPDATE books SET is_deleted = false WHERE id = ?")
-@SQLRestriction("is_deleted = true")
+@SQLDelete(sql = "UPDATE books SET is_deleted = 1 WHERE id = ?")
+@SQLRestriction("is_deleted = 0")
 @Table(name = "books")
 @Getter
 @Setter
@@ -32,6 +32,6 @@ public class Book {
     private BigDecimal price;
     private String description;
     private String coverImage;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean isDeleted = false;
 }
