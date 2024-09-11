@@ -2,11 +2,11 @@ package project.bookstore.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
-import project.bookstore.validation.Unique;
 
 @Getter
 @Setter
@@ -15,8 +15,8 @@ public class CreateBookRequestDto {
     private String title;
     @NotBlank
     private String author;
-    @NotNull
-    @Unique
+    @NotBlank
+    @Pattern(regexp = "//d{13}", message = "Should be a valid ISBN number: 13 numbers only!")
     private String isbn;
     @NotNull
     @PositiveOrZero

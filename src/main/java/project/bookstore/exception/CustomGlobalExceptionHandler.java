@@ -32,13 +32,13 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .map(this::getErrorMessage)
                 .toList();
         body.put("error", errors);
-        return new ResponseEntity<>(body, headers, status);
+        return new ResponseEntity<>(body, headers, HttpStatus.BAD_REQUEST);
     }
 
     private String getErrorMessage(ObjectError e) {
         if (e instanceof FieldError) {
             String fieldName = ((FieldError) e).getField();
-            String message = ((FieldError) e).getDefaultMessage();
+            String message = e.getDefaultMessage();
             return fieldName + ": " + message;
         }
         return e.getDefaultMessage();
