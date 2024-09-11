@@ -11,7 +11,7 @@ import project.bookstore.exception.EntityNotFoundException;
 import project.bookstore.mapper.BookMapper;
 import project.bookstore.model.Book;
 import project.bookstore.repository.BookRepository;
-import project.bookstore.repository.BookSpecificationBuilder;
+import project.bookstore.repository.filter.book.BookSpecificationBuilder;
 import project.bookstore.service.BookService;
 
 @RequiredArgsConstructor

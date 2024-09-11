@@ -1,4 +1,4 @@
-package project.bookstore.repository;
+package project.bookstore.repository.filter;
 
 import org.springframework.data.jpa.domain.Specification;
 import project.bookstore.dto.BookSearchParameters;

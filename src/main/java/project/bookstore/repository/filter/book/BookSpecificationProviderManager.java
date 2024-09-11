@@ -1,9 +1,11 @@
-package project.bookstore.repository;
+package project.bookstore.repository.filter.book;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import project.bookstore.model.Book;
+import project.bookstore.repository.filter.SpecificationProvider;
+import project.bookstore.repository.filter.SpecificationProviderManager;
 
 @RequiredArgsConstructor
 @Component
