@@ -1,9 +1,9 @@
-package project.bookstore.repository.filter.book;
+package project.bookstore.repository.book;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import project.bookstore.dto.BookSearchParameters;
+import project.bookstore.dto.book.BookSearchParameters;
 import project.bookstore.model.Book;
 import project.bookstore.repository.filter.SpecificationBuilder;
 import project.bookstore.repository.filter.SpecificationProviderManager;

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.bookstore.dto.BookDto;
-import project.bookstore.dto.BookSearchParameters;
-import project.bookstore.dto.CreateBookRequestDto;
+import project.bookstore.dto.book.BookDto;
+import project.bookstore.dto.book.BookSearchParameters;
+import project.bookstore.dto.book.CreateBookRequestDto;
 import project.bookstore.mapper.BookMapper;
 import project.bookstore.service.BookService;
 

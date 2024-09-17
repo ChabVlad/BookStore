@@ -1,4 +1,4 @@
-package project.bookstore.repository.filter.book;
+package project.bookstore.repository.book.specification;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

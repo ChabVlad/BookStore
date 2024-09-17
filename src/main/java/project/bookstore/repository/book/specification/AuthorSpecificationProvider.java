@@ -1,4 +1,4 @@
-package project.bookstore.repository.book;
+package project.bookstore.repository.book.specification;
 
 import java.util.Arrays;
 import org.springframework.data.jpa.domain.Specification;
