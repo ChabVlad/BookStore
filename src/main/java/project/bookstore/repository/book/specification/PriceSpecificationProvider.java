@@ -1,4 +1,4 @@
-package project.bookstore.repository.book;
+package project.bookstore.repository.book.specification;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;

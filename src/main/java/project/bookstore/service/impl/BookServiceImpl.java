@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import project.bookstore.dto.BookDto;
-import project.bookstore.dto.BookSearchParameters;
-import project.bookstore.dto.CreateBookRequestDto;
+import project.bookstore.dto.book.BookDto;
+import project.bookstore.dto.book.BookSearchParameters;
+import project.bookstore.dto.book.CreateBookRequestDto;
 import project.bookstore.exception.EntityNotFoundException;
 import project.bookstore.mapper.BookMapper;
 import project.bookstore.model.Book;
-import project.bookstore.repository.BookRepository;
-import project.bookstore.repository.BookSpecificationBuilder;
+import project.bookstore.repository.book.BookRepository;
+import project.bookstore.repository.book.BookSpecificationBuilder;
 import project.bookstore.service.BookService;
 
 @RequiredArgsConstructor

@@ -2,9 +2,9 @@ package project.bookstore.service;
 
 import java.util.List;
 import org.springframework.data.domain.Pageable;
-import project.bookstore.dto.BookDto;
-import project.bookstore.dto.BookSearchParameters;
-import project.bookstore.dto.CreateBookRequestDto;
+import project.bookstore.dto.book.BookDto;
+import project.bookstore.dto.book.BookSearchParameters;
+import project.bookstore.dto.book.CreateBookRequestDto;
 import project.bookstore.model.Book;
 
 public interface BookService {
