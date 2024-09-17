@@ -1,12 +1,13 @@
-package project.bookstore.annotation;
+package project.bookstore.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
-public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Object> {
+import java.util.Objects;
 
+public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Object> {
     private String firstFieldName;
     private String secondFieldName;
     private String message;
@@ -27,10 +28,6 @@ public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Obje
         Object firstObject = beanWrapper.getPropertyValue(firstFieldName);
         Object secondObject = beanWrapper.getPropertyValue(secondFieldName);
 
-        if (firstObject == null || secondObject == null) {
-            return false;
-        }
-
-        return firstObject.equals(secondObject);
+        return Objects.equals(firstObject, secondObject);
     }
 }

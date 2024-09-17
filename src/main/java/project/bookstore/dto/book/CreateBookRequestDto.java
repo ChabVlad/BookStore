@@ -11,22 +11,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateBookRequestDto {
-
     @NotBlank
     private String title;
-
     @NotBlank
     private String author;
-
     @NotBlank
     @Pattern(regexp = "//d{13}", message = "Should be a valid ISBN number: 13 numbers only!")
     private String isbn;
-
     @NotNull
     @PositiveOrZero
     private BigDecimal price;
-
     private String description;
-
     private String coverImage;
 }

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import project.bookstore.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByEmail(String email);
+public interface UserRepo extends JpaRepository<User, Integer> {
+    Boolean existsUserByEmail(String email);
 }

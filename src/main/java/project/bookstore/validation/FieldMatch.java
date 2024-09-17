@@ -1,4 +1,4 @@
-package project.bookstore.annotation;
+package project.bookstore.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -17,5 +17,4 @@ public @interface FieldMatch {
 
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-
 }
