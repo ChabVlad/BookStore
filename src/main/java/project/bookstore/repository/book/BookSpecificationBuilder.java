@@ -1,21 +1,12 @@
-<<<<<<<< HEAD:src/main/java/project/bookstore/repository/book/BookSpecificationBuilder.java
 package project.bookstore.repository.book;
-========
-package project.bookstore.repository.filter.book;
->>>>>>>> main:src/main/java/project/bookstore/repository/filter/book/BookSpecificationBuilder.java
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import project.bookstore.dto.book.BookSearchParameters;
 import project.bookstore.model.Book;
-<<<<<<<< HEAD:src/main/java/project/bookstore/repository/book/BookSpecificationBuilder.java
-import project.bookstore.repository.SpecificationBuilder;
-import project.bookstore.repository.SpecificationProviderManager;
-========
 import project.bookstore.repository.filter.SpecificationBuilder;
 import project.bookstore.repository.filter.SpecificationProviderManager;
->>>>>>>> main:src/main/java/project/bookstore/repository/filter/book/BookSpecificationBuilder.java
 
 @RequiredArgsConstructor
 @Component
