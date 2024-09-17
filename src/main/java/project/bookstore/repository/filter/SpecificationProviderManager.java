@@ -1,4 +1,4 @@
-package project.bookstore.repository;
+package project.bookstore.repository.filter;
 
 public interface SpecificationProviderManager<T> {
 
