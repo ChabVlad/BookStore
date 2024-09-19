@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import project.bookstore.service.BookService;
 @Tag(name = "Book controller", description = "endpoints for managing library")
 @RequiredArgsConstructor
 @RestController
+//@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
@@ -45,6 +47,7 @@ public class BookController {
     }
 
     @PostMapping
+    @PreAuthorize("has_role('ROLE_ADMIN')")
     @Operation(
             summary = "Create new book",
             description = "Create new book and add to db")

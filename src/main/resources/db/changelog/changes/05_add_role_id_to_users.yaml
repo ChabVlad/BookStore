@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_role_id_to_users
+      author: vlad
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
