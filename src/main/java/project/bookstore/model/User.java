@@ -34,7 +34,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String lastName;
     private String shippingAddress;
-    @Column(nullable = false)
     @ManyToMany
     @JoinTable(
             name = "users_roles",
@@ -45,11 +44,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        return roles;
     }
 
     @Override
     public String getUsername() {
-        return getEmail();
+        return email;
     }
 }

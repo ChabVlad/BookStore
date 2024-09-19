@@ -47,7 +47,7 @@ public class BookController {
     }
 
     @PostMapping
-    @PreAuthorize("has_role('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             summary = "Create new book",
             description = "Create new book and add to db")
