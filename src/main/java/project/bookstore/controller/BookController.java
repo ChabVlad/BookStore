@@ -24,7 +24,6 @@ import project.bookstore.service.BookService;
 @Tag(name = "Book controller", description = "endpoints for managing library")
 @RequiredArgsConstructor
 @RestController
-//@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
@@ -56,6 +55,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Update book's info", description = "Update book's info")
     public BookDto updateBook(
             @RequestBody @Valid CreateBookRequestDto requestDto,
@@ -65,6 +65,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Delete book", description = "Delete book from db")
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBookById(id);

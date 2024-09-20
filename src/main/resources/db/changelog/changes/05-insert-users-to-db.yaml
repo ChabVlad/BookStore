@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: insert-roles-to-db
       author: vlad
       changes:
         - insert:
@@ -17,7 +17,7 @@ databaseChangeLog:
                   value: ROLE_ADMIN
 
   - changeSet:
-      id: 2
+      id: insert-users-to-db
       author: vlad
       changes:
         - insert:
@@ -57,7 +57,7 @@ databaseChangeLog:
                   name: shipping_address
                   value: 456 Admin St, City, Country
   - changeSet:
-      id: 3
+      id: insert-users-roles-to-db
       author: vlad
       changes:
         - insert:
@@ -69,3 +69,12 @@ databaseChangeLog:
               - column:
                   name: role_id
                   valueComputed: "(SELECT id FROM roles WHERE role = 'ROLE_ADMIN')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users u WHERE email='user@example.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE role = 'ROLE_USER')"
