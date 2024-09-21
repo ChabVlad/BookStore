@@ -11,17 +11,17 @@ import project.bookstore.mapper.UserMapper;
 import project.bookstore.model.Role;
 import project.bookstore.model.RoleName;
 import project.bookstore.model.User;
-import project.bookstore.repository.role.RoleRepo;
-import project.bookstore.repository.user.UserRepo;
+import project.bookstore.repository.role.RoleRepository;
+import project.bookstore.repository.user.UserRepository;
 import project.bookstore.service.UserService;
 
 @RequiredArgsConstructor
 @Component
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
-    private final UserRepo userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepo roleRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
