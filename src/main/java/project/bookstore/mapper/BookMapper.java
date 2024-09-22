@@ -1,5 +1,6 @@
 package project.bookstore.mapper;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import project.bookstore.config.MapperConfig;
@@ -17,4 +18,9 @@ public interface BookMapper {
     BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
 
     void updateBookFromDto(CreateBookRequestDto requestDto, @MappingTarget Book book);
+
+    @AfterMapping
+    default void setCategoryIds(@MappingTarget BookDto bookDto, Book book) {
+        book.setCategories(bookDto.getCategories());
+    };
 }
