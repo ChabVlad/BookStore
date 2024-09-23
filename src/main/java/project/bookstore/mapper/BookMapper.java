@@ -22,5 +22,5 @@ public interface BookMapper {
     @AfterMapping
     default void setCategoryIds(@MappingTarget BookDto bookDto, Book book) {
         book.setCategories(bookDto.getCategories());
-    };
+    }
 }

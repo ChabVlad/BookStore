@@ -1,10 +1,10 @@
 package project.bookstore.service.impl;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.category.CategoryDto;
+import project.bookstore.dto.category.CategoryRequestDto;
 import project.bookstore.exception.EntityNotFoundException;
 import project.bookstore.mapper.CategoryMapper;
 import project.bookstore.model.Category;
@@ -31,18 +31,23 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto save(CategoryDto categoryDto) {
-        Category category = categoryMapper.toEntity(categoryDto);
+    public CategoryDto save(CategoryRequestDto requestDto) {
+        Category category = categoryMapper.toModel(requestDto);
+        System.out.println(category.getName());
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override
-    public CategoryDto update(Long id, CategoryDto categoryDto) {
-        return null;
+    public CategoryDto update(Long id, CategoryRequestDto requestDto) {
+        Category category = categoryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Category not found by id: " + id));
+
+        categoryMapper.updateCategoryFromDto(requestDto, category);
+        return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override
     public void deleteById(Long id) {
-
+        categoryRepository.deleteById(id);
     }
 }
