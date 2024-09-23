@@ -4,8 +4,8 @@ databaseChangeLog:
       author: vlad
       changes:
         - createTable:
-            - tableName: books
-            - columns:
+            tableName: books
+            columns:
                 - column:
                     name: id
                     type: bigint

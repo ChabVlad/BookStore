@@ -28,6 +28,7 @@ public class AuthenticationController {
     )
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws RegistrationException {
+
         return userService.register(requestDto);
     }
 }

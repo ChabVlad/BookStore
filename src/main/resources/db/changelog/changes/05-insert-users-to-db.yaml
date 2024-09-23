@@ -1,0 +1,80 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-roles-to-db
+      author: vlad
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role
+                  value: ROLE_USER
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role
+                  value: ROLE_ADMIN
+
+  - changeSet:
+      id: insert-users-to-db
+      author: vlad
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: user@example.com
+              - column:
+                  name: password
+                  value: $2a$10$t9J8JGJG10fymKsaAEpi6O8PBs5V2922Y1.FrV1zvQCMqI9HVB4nC
+              - column:
+                  name: first_name
+                  value: John
+              - column:
+                  name: last_name
+                  value: Doe
+              - column:
+                  name: shipping_address
+                  value: 123 Main St, City, Country
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: admin@example.com
+              - column:
+                  name: password
+                  value: $2a$10$2jLcY2h/bItkaVEM4ruOO.1Kdk6waWvJ5cmx4GFkwO8afRwEle.zK
+              - column:
+                  name: first_name
+                  value: Admin
+              - column:
+                  name: last_name
+                  value: User
+              - column:
+                  name: shipping_address
+                  value: 456 Admin St, City, Country
+  - changeSet:
+      id: insert-users-roles-to-db
+      author: vlad
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users u WHERE email='admin@example.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE role = 'ROLE_ADMIN')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users u WHERE email='user@example.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE role = 'ROLE_USER')"
