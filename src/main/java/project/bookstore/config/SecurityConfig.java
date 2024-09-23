@@ -1,5 +1,7 @@
 package project.bookstore.config;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +22,7 @@ import project.bookstore.security.JwtAuthenticationFilter;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsService service;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
@@ -29,29 +31,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(
-                                        "/auth/**",
-                                        "/api/auth/register",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**"
+                                        antMatcher("/auth/**"),
+                                        antMatcher("/swagger-ui/**"),
+                                        antMatcher("/v3/api-docs/**")
                                 )
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-                .addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-                )
                 .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS
-                        ))
-                .userDetailsService(userDetailsService)
+                        s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+                .userDetailsService(service)
                 .build();
     }
 

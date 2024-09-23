@@ -1,7 +1,6 @@
 package project.bookstore.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -18,14 +17,13 @@ public class JwtUtil {
     private long expiration;
     private final SecretKey secret;
 
-    private JwtUtil(@Value("${jwt.secret}") String secretString) {
+    public JwtUtil(@Value(value = "${jwt.secret}") String secretString) {
         secret = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String name) {
+    public String generateToken(String username) {
         return Jwts.builder()
-                .subject(name)
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .subject(username)
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secret)
                 .compact();
@@ -33,14 +31,9 @@ public class JwtUtil {
 
     public boolean isValidToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith(secret)
-                    .build()
-                    .parseSignedClaims(token);
-
-            return !claimsJws.getPayload().getExpiration().before(new Date());
+            return !getClaimFromToken(token, Claims::getExpiration).before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtException("Expired or invalid Jwt token", e);
+            throw new JwtException("Expired or invalid JWT token", e);
         }
     }
 
@@ -50,11 +43,10 @@ public class JwtUtil {
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parser()
-                .verifyWith(secret)
+                .verifyWith((SecretKey) secret)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-
         return claimsResolver.apply(claims);
     }
 }
