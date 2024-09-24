@@ -30,6 +30,7 @@ public class BookController {
     private final BookMapper bookMapper;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(
             summary = "Get all books",
             description = "Get all books from db")
