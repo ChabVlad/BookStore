@@ -5,7 +5,7 @@ import project.bookstore.dto.category.CategoryDto;
 import project.bookstore.dto.category.CategoryRequestDto;
 
 public interface CategoryService {
-    List findAll();
+    List<CategoryDto> findAll();
 
     CategoryDto getById(Long id);
 
