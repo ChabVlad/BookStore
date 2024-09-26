@@ -1,10 +1,9 @@
-package project.bookstore.dto.shoppingCart;
+package project.bookstore.dto.cart;
 
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
-import project.bookstore.dto.cartItem.CartItemDto;
+import project.bookstore.dto.item.CartItemDto;
 
 @Getter
 @Setter
