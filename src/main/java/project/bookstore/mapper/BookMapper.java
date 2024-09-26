@@ -3,6 +3,7 @@ package project.bookstore.mapper;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import project.bookstore.config.MapperConfig;
 import project.bookstore.dto.book.BookDto;
 import project.bookstore.dto.book.BookDtoWithoutCategoryIds;
@@ -22,5 +23,15 @@ public interface BookMapper {
     @AfterMapping
     default void setCategoryIds(@MappingTarget BookDto bookDto, Book book) {
         book.setCategories(bookDto.getCategories());
+    }
+
+    @Named("bookFromId")
+    default Book bookFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Book book = new Book();
+        book.setId(id);
+        return book;
     }
 }
