@@ -1,26 +1,28 @@
 package project.bookstore.service;
 
-import jakarta.validation.Valid;
 import project.bookstore.dto.cart.ShoppingCartDto;
 import project.bookstore.dto.item.CreateCartItemDto;
 import project.bookstore.dto.item.UpdateCartItemDto;
 import project.bookstore.model.User;
 
 public interface ShoppingCartService {
-    ShoppingCartDto getShoppingCart(String username);
+    ShoppingCartDto getShoppingCart(Long userId);
 
     ShoppingCartDto addItemToShoppingCart(
-            @Valid CreateCartItemDto cartItemDto,
-            String username
+            CreateCartItemDto cartItemDto,
+            Long userId
     );
 
     ShoppingCartDto updateItemInShoppingCart(
             Long cartItemId,
-            @Valid UpdateCartItemDto updateCartItemDto,
-            String username
+            UpdateCartItemDto updateCartItemDto,
+            Long userId
     );
 
-    void deleteItemFromShoppingCart(Long cartItemId);
+    void deleteItemFromShoppingCart(
+            Long cartItemId,
+            Long userId
+    );
 
     void addShoppingCart(User user);
 }

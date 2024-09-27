@@ -7,5 +7,5 @@ import project.bookstore.model.ShoppingCart;
 
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
     @EntityGraph(attributePaths = {"cartItems", "cartItems.book"})
-    Optional<ShoppingCart> findByUserEmail(String userName);
+    Optional<ShoppingCart> findByUserId(Long userId);
 }
