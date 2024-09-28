@@ -2,7 +2,6 @@ package project.bookstore.service.impl;
 
 import io.jsonwebtoken.security.SecurityException;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,11 +71,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Shopping cart not found with user id: " + userId));
-        Optional<CartItem> cartItem = cartItemRepository
-                .findByIdAndShoppingCartId(cartItemId, shoppingCart.getId());
-        cartItem.orElseThrow(() -> new EntityNotFoundException("Cart item not found"))
-                .setQuantity(updateCartItemDto.getQuantity());
-        cartItemRepository.save(cartItem.get());
+        CartItem cartItem = cartItemRepository
+                .findByIdAndShoppingCartId(cartItemId, shoppingCart.getId())
+                .map(item -> {
+                    item.setQuantity(updateCartItemDto.getQuantity());
+                    return item;
+                }).orElseThrow(() -> new EntityNotFoundException(
+                        String.format("No cart item with id: %d for user: %d", cartItemId, userId)
+                ));
+        cartItemRepository.save(cartItem);
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
