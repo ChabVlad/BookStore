@@ -8,7 +8,6 @@ import project.bookstore.model.ShoppingCart;
 
 @Mapper(config = MapperConfig.class, uses = {UserMapper.class, CartItemMapper.class})
 public interface ShoppingCartMapper {
-
     @Mapping(source = "user.id", target = "userId")
     ShoppingCartDto toDto(ShoppingCart shoppingCart);
 
