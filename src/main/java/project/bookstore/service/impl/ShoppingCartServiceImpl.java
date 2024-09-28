@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.dto.cart.ShoppingCartDto;
-import project.bookstore.dto.item.CreateCartItemDto;
-import project.bookstore.dto.item.UpdateCartItemDto;
+import project.bookstore.dto.cart.item.CreateCartItemDto;
+import project.bookstore.dto.cart.item.UpdateCartItemDto;
 import project.bookstore.exception.EntityNotFoundException;
 import project.bookstore.mapper.CartItemMapper;
 import project.bookstore.mapper.ShoppingCartMapper;
@@ -17,7 +17,7 @@ import project.bookstore.model.ShoppingCart;
 import project.bookstore.model.User;
 import project.bookstore.repository.book.BookRepository;
 import project.bookstore.repository.cart.ShoppingCartRepository;
-import project.bookstore.repository.item.CartItemRepository;
+import project.bookstore.repository.cart.item.CartItemRepository;
 import project.bookstore.service.ShoppingCartService;
 
 @Service

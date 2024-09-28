@@ -3,8 +3,8 @@ package project.bookstore.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import project.bookstore.config.MapperConfig;
-import project.bookstore.dto.item.CartItemDto;
-import project.bookstore.dto.item.CreateCartItemDto;
+import project.bookstore.dto.cart.item.CartItemDto;
+import project.bookstore.dto.cart.item.CreateCartItemDto;
 import project.bookstore.model.CartItem;
 
 @Mapper(config = MapperConfig.class, uses = {BookMapper.class, ShoppingCartMapper.class})

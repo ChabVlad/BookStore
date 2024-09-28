@@ -17,8 +17,12 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
+@SQLDelete(sql = "UPDATE orders SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "orders")
 @Getter
 @Setter
@@ -30,7 +34,7 @@ public class Order {
     @JoinColumn(nullable = false)
     User user;
     @Enumerated
-    @Column(nullable = false)
+    @Column(nullable = false, name = "status", columnDefinition = "VARCHAR")
     private Status status;
     @Column(nullable = false)
     private BigDecimal total;
@@ -40,4 +44,6 @@ public class Order {
     private String shippingAddress;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItems;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean isDeleted = false;
 }

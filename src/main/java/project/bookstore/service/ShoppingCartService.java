@@ -1,8 +1,8 @@
 package project.bookstore.service;
 
 import project.bookstore.dto.cart.ShoppingCartDto;
-import project.bookstore.dto.item.CreateCartItemDto;
-import project.bookstore.dto.item.UpdateCartItemDto;
+import project.bookstore.dto.cart.item.CreateCartItemDto;
+import project.bookstore.dto.cart.item.UpdateCartItemDto;
 import project.bookstore.model.User;
 
 public interface ShoppingCartService {

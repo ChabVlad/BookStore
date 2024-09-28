@@ -12,8 +12,12 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
+@SQLDelete(sql = "UPDATE order_items SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "order_items")
 @Getter
 @Setter
@@ -31,4 +35,6 @@ public class OrderItem {
     private int quantity;
     @Column(nullable = false)
     private BigDecimal price;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean isDeleted = false;
 }

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.bookstore.dto.cart.ShoppingCartDto;
-import project.bookstore.dto.item.CreateCartItemDto;
-import project.bookstore.dto.item.UpdateCartItemDto;
+import project.bookstore.dto.cart.item.CreateCartItemDto;
+import project.bookstore.dto.cart.item.UpdateCartItemDto;
 import project.bookstore.model.User;
 import project.bookstore.service.ShoppingCartService;
 
@@ -34,9 +34,9 @@ public class ShoppingCartController {
             summary = "Get shopping cart",
             description = "Get user's shopping cart")
     public ShoppingCartDto getShoppingCart(
-            @AuthenticationPrincipal Authentication authentication
+            @AuthenticationPrincipal User user
     ) {
-        return shoppingCartService.getShoppingCart(getUserId(authentication));
+        return shoppingCartService.getShoppingCart(user.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
