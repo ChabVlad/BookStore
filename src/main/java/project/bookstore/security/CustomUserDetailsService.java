@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import project.bookstore.model.User;
 import project.bookstore.repository.user.UserRepository;
 
 @Service
@@ -15,14 +14,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepo.findByEmail(email)
+        return userRepo.findByEmail(email)
                 .orElseThrow(
                         () -> new UsernameNotFoundException("Can't find user by email: " + email));
-        return new CustomUserDetails(
-                user.getId(),
-                user.getUsername(),
-                user.getPassword(),
-                user.getAuthorities()
-        );
+
     }
 }
