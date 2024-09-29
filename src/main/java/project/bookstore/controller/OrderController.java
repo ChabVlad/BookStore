@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,9 +36,9 @@ public class OrderController {
             description = "Place an order to db")
     public ResponseOrderDto placeOrder(
             @Valid @RequestBody RequestOrderDto requestDto,
-            @AuthenticationPrincipal Authentication authentication
+            @AuthenticationPrincipal User user
     ) {
-        return orderService.placeOrder(requestDto, getUserId(authentication));
+        return orderService.placeOrder(requestDto, user.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -50,8 +48,9 @@ public class OrderController {
             description = "Retrieve user's order history")
     public List<ResponseOrderDto> getUserHistory(
             @ParameterObject Pageable pageable,
-            @AuthenticationPrincipal Authentication authentication) {
-        return orderService.getUserHistory(pageable, getUserId(authentication));
+            @AuthenticationPrincipal User user
+    ) {
+        return orderService.getUserHistory(pageable, user.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -59,12 +58,12 @@ public class OrderController {
     @Operation(
             summary = "Update an order",
             description = "Update an order in db")
-    private ResponseOrderDto updateOrder(
+    public ResponseOrderDto updateOrder(
             @Valid @RequestBody RequestOrderDto requestDto,
             @PathVariable Long id,
-            @AuthenticationPrincipal Authentication authentication
+            @AuthenticationPrincipal User user
     ) {
-        return orderService.updateOrderStatus(requestDto, id, getUserId(authentication));
+        return orderService.updateOrderStatus(requestDto, id, user.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -74,9 +73,9 @@ public class OrderController {
             description = "Retrieve all order items for a specific order")
     public List<OrderItemDto> getOrderItems(
             @PathVariable Long orderId,
-            @AuthenticationPrincipal Authentication authentication
+            @AuthenticationPrincipal User user
     ) {
-        return orderService.getOrderItems(orderId, getUserId(authentication));
+        return orderService.getOrderItems(orderId, user.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -87,13 +86,8 @@ public class OrderController {
     public OrderItemDto getOrderItemById(
             @PathVariable Long orderId,
             @PathVariable Long itemId,
-            @AuthenticationPrincipal Authentication authentication
+            @AuthenticationPrincipal User user
     ) {
-        return orderService.getOrderItemById(orderId, itemId, getUserId(authentication));
-    }
-
-    private Long getUserId(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return user.getId();
+        return orderService.getOrderItemById(orderId, itemId, user.getId());
     }
 }

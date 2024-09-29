@@ -3,6 +3,7 @@ package project.bookstore.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,8 +33,8 @@ public class Order {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    User user;
-    @Enumerated
+    private User user;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "status", columnDefinition = "VARCHAR")
     private Status status;
     @Column(nullable = false)

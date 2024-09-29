@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,10 +44,10 @@ public class ShoppingCartController {
             summary = "Add item to shopping cart",
             description = "Add item to user's shopping cart")
     public ShoppingCartDto addItemToShoppingCart(
-            @AuthenticationPrincipal Authentication authentication,
+            @AuthenticationPrincipal User user,
             @RequestBody @Valid CreateCartItemDto cartItemDto
     ) {
-        return shoppingCartService.addItemToShoppingCart(cartItemDto, getUserId(authentication));
+        return shoppingCartService.addItemToShoppingCart(cartItemDto, user.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -58,13 +57,13 @@ public class ShoppingCartController {
             description = "Update cart in user's shopping cart")
     public ShoppingCartDto updateItem(
             @PathVariable("id") Long cartItemId,
-            @AuthenticationPrincipal Authentication authentication,
+            @AuthenticationPrincipal User user,
             @RequestBody @Valid UpdateCartItemDto updateCartItemDto
     ) {
         return shoppingCartService.updateItemInShoppingCart(
                 cartItemId,
                 updateCartItemDto,
-                getUserId(authentication)
+                user.getId()
         );
     }
 
@@ -75,13 +74,8 @@ public class ShoppingCartController {
             description = "Delete item from user's shopping cart")
     public void deleteItem(
             @PathVariable("id") Long cartItemId,
-            @AuthenticationPrincipal Authentication authentication
+            @AuthenticationPrincipal User user
     ) {
-        shoppingCartService.deleteItemFromShoppingCart(cartItemId, getUserId(authentication));
-    }
-
-    private Long getUserId(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return user.getId();
+        shoppingCartService.deleteItemFromShoppingCart(cartItemId, user.getId());
     }
 }
