@@ -4,6 +4,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.dto.user.UserRegistrationRequestDto;
 import project.bookstore.dto.user.UserResponseDto;
 import project.bookstore.exception.RegistrationException;
@@ -13,6 +14,7 @@ import project.bookstore.model.RoleName;
 import project.bookstore.model.User;
 import project.bookstore.repository.role.RoleRepository;
 import project.bookstore.repository.user.UserRepository;
+import project.bookstore.service.ShoppingCartService;
 import project.bookstore.service.UserService;
 
 @RequiredArgsConstructor
@@ -22,7 +24,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
+    @Transactional
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
@@ -33,6 +37,7 @@ public class UserServiceImpl implements UserService {
         Role userRole = roleRepository.findByRole(RoleName.ROLE_USER);
         user.setRoles(Set.of(userRole));
         userRepository.save(user);
+        shoppingCartService.addShoppingCart(user);
 
         return userMapper.toResponseDto(user);
     }
