@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,9 +33,9 @@ public class ShoppingCartController {
             summary = "Get shopping cart",
             description = "Get user's shopping cart")
     public ShoppingCartDto getShoppingCart(
-            @AuthenticationPrincipal User user
+            Authentication authentication
     ) {
-        return shoppingCartService.getShoppingCart(user.getId());
+        return shoppingCartService.getShoppingCart(getUserId(authentication));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -44,10 +44,10 @@ public class ShoppingCartController {
             summary = "Add item to shopping cart",
             description = "Add item to user's shopping cart")
     public ShoppingCartDto addItemToShoppingCart(
-            @AuthenticationPrincipal User user,
+            Authentication authentication,
             @RequestBody @Valid CreateCartItemDto cartItemDto
     ) {
-        return shoppingCartService.addItemToShoppingCart(cartItemDto, user.getId());
+        return shoppingCartService.addItemToShoppingCart(cartItemDto, getUserId(authentication));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -57,13 +57,13 @@ public class ShoppingCartController {
             description = "Update cart in user's shopping cart")
     public ShoppingCartDto updateItem(
             @PathVariable("id") Long cartItemId,
-            @AuthenticationPrincipal User user,
+            Authentication authentication,
             @RequestBody @Valid UpdateCartItemDto updateCartItemDto
     ) {
         return shoppingCartService.updateItemInShoppingCart(
                 cartItemId,
                 updateCartItemDto,
-                user.getId()
+                getUserId(authentication)
         );
     }
 
@@ -74,8 +74,13 @@ public class ShoppingCartController {
             description = "Delete item from user's shopping cart")
     public void deleteItem(
             @PathVariable("id") Long cartItemId,
-            @AuthenticationPrincipal User user
+            Authentication authentication
     ) {
-        shoppingCartService.deleteItemFromShoppingCart(cartItemId, user.getId());
+        shoppingCartService.deleteItemFromShoppingCart(cartItemId, getUserId(authentication));
+    }
+
+    private Long getUserId(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return user.getId();
     }
 }
