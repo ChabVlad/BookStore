@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.bookstore.dto.cart.ShoppingCartDto;
-import project.bookstore.dto.cart.item.CreateCartItemDto;
-import project.bookstore.dto.cart.item.UpdateCartItemDto;
+import project.bookstore.dto.item.CreateCartItemDto;
+import project.bookstore.dto.item.UpdateCartItemDto;
 import project.bookstore.model.User;
 import project.bookstore.service.ShoppingCartService;
 
