@@ -1,5 +1,7 @@
 package project.bookstore.mapper;
 
+import java.util.List;
+import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import project.bookstore.config.MapperConfig;
@@ -17,4 +19,6 @@ public interface OrderItemMapper {
 
     @Mapping(source = "book.id", target = "bookId")
     OrderItemDto toDto(OrderItem orderItem);
+
+    List<OrderItemDto> toOrderItemDtoList(Set<OrderItem> orderItems);
 }

@@ -11,7 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.bookstore.dto.order.RequestOrderDto;
+import project.bookstore.dto.order.PatchRequestOrderDto;
+import project.bookstore.dto.order.PostRequestOrderDto;
 import project.bookstore.dto.order.ResponseOrderDto;
 import project.bookstore.dto.order.item.OrderItemDto;
 import project.bookstore.exception.EntityNotFoundException;
@@ -37,13 +38,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public ResponseOrderDto placeOrder(RequestOrderDto requestDto, Long userId) {
+    public ResponseOrderDto placeOrder(PostRequestOrderDto requestDto, Long userId) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Shopping cart not found with user id: " + userId));
         Order order = orderMapper.toEntity(requestDto);
         order.setUser(shoppingCart.getUser());
-        order.setStatus(Status.COMPLETED);
+        order.setStatus(Status.PENDING);
         order.setOrderItems(shoppingCart.getCartItems()
                 .stream()
                 .map(cartItem -> {
@@ -58,18 +59,12 @@ public class OrderServiceImpl implements OrderService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add));
         order.setOrderDate(LocalDateTime.now());
-        order.setShippingAddress(
-                Optional.ofNullable(requestDto.getShippingAddress())
-                        .orElseGet(() -> Optional.ofNullable(order.getUser().getShippingAddress())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                        "Shipping address not found")))
-        );
+        order.setShippingAddress(getShippingAddress(requestDto, order));
         orderRepository.save(order);
 
         return orderMapper.toDto(order);
     }
 
-    @Transactional
     @Override
     public List<ResponseOrderDto> getUserHistory(Pageable pageable, Long userId) {
         Page<Order> orders = orderRepository.findAllByUserId(userId, pageable);
@@ -79,40 +74,45 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
-    @Transactional
     @Override
-    public ResponseOrderDto updateOrderStatus(RequestOrderDto requestDto, Long id, Long userId) {
-        Order order = findByIdAndUserId(id, userId);
-        if (requestDto.getStatus() != null) {
-            order.setStatus(requestDto.getStatus());
-            orderRepository.save(order);
-            return orderMapper.toDto(order);
-        } else {
-            return orderMapper.toDto(order);
-        }
+    public ResponseOrderDto updateOrderStatus(
+            PatchRequestOrderDto requestDto,
+            Long orderId,
+            Long userId
+    ) {
+        Order order = orderRepository.findById(orderId)
+                .map(o -> {
+                    o.setStatus(requestDto.getStatus());
+                    return o;
+                })
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Order with id: %d not found", orderId)
+                ));
+        orderRepository.save(order);
+        return orderMapper.toDto(order);
     }
 
-    @Transactional
     @Override
     public List<OrderItemDto> getOrderItems(Long id, Long userId) {
         Order order = findByIdAndUserId(id, userId);
-        return order.getOrderItems()
-                .stream()
-                .map(orderItemMapper::toDto)
-                .toList();
+        return orderItemMapper.toOrderItemDtoList(order.getOrderItems());
     }
 
-    @Transactional
     @Override
     public OrderItemDto getOrderItemById(Long orderId, Long itemId, Long userId) {
         OrderItem orderItem = orderItemRepository
                 .findByIdAndOrderIdAndOrderUserId(itemId, orderId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Order item not found with item id: " + itemId));
-        if (!orderItem.getOrder().getUser().getId().equals(userId)) {
-            throw new SecurityException("Access denied");
-        }
+
         return orderItemMapper.toDto(orderItem);
+    }
+
+    private String getShippingAddress(PostRequestOrderDto requestDto, Order order) {
+        return Optional.ofNullable(requestDto.getShippingAddress())
+                .orElseGet(() -> Optional.ofNullable(order.getUser().getShippingAddress())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Shipping address not found")));
     }
 
     private Order findByIdAndUserId(Long id, Long userId) {

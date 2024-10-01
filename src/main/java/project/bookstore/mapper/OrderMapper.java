@@ -3,7 +3,7 @@ package project.bookstore.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import project.bookstore.config.MapperConfig;
-import project.bookstore.dto.order.RequestOrderDto;
+import project.bookstore.dto.order.PostRequestOrderDto;
 import project.bookstore.dto.order.ResponseOrderDto;
 import project.bookstore.model.Order;
 
@@ -13,5 +13,5 @@ public interface OrderMapper {
     @Mapping(target = "orderItems", source = "orderItems")
     ResponseOrderDto toDto(Order order);
 
-    Order toEntity(RequestOrderDto requestDto);
+    Order toEntity(PostRequestOrderDto requestDto);
 }

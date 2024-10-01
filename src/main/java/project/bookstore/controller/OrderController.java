@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.bookstore.dto.order.RequestOrderDto;
+import project.bookstore.dto.order.PatchRequestOrderDto;
+import project.bookstore.dto.order.PostRequestOrderDto;
 import project.bookstore.dto.order.ResponseOrderDto;
 import project.bookstore.dto.order.item.OrderItemDto;
 import project.bookstore.model.User;
@@ -35,7 +36,7 @@ public class OrderController {
             summary = "Place an order",
             description = "Place an order to db")
     public ResponseOrderDto placeOrder(
-            @Valid @RequestBody RequestOrderDto requestDto,
+            @Valid @RequestBody PostRequestOrderDto requestDto,
             Authentication authentication
     ) {
         return orderService.placeOrder(requestDto, getUserId(authentication));
@@ -54,16 +55,16 @@ public class OrderController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PatchMapping("/{id}")
+    @PatchMapping("/{orderId}")
     @Operation(
             summary = "Update an order",
             description = "Update an order in db")
     public ResponseOrderDto updateOrder(
-            @Valid @RequestBody RequestOrderDto requestDto,
-            @PathVariable Long id,
+            @Valid @RequestBody PatchRequestOrderDto requestDto,
+            @PathVariable Long orderId,
             Authentication authentication
     ) {
-        return orderService.updateOrderStatus(requestDto, id, getUserId(authentication));
+        return orderService.updateOrderStatus(requestDto, orderId, getUserId(authentication));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
