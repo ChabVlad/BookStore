@@ -17,7 +17,7 @@ import project.bookstore.model.ShoppingCart;
 import project.bookstore.model.User;
 import project.bookstore.repository.book.BookRepository;
 import project.bookstore.repository.cart.ShoppingCartRepository;
-import project.bookstore.repository.item.CartItemRepository;
+import project.bookstore.repository.cart.item.CartItemRepository;
 import project.bookstore.service.ShoppingCartService;
 
 @Service
