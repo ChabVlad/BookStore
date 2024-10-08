@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,21 +30,20 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
-import project.bookstore.dto.book.BookDto;
-import project.bookstore.dto.book.BookSearchParameters;
-import project.bookstore.dto.book.CreateBookRequestDto;
-import project.bookstore.model.Category;
+import project.bookstore.dto.book.BookDtoWithoutCategoryIds;
+import project.bookstore.dto.category.CategoryDto;
+import project.bookstore.dto.category.CategoryRequestDto;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BookControllerTest {
-    private static final String URL = "/books";
-    private static final Long VALID_BOOK_ID = 1L;
+public class CategoryControllerTest {
+    private static final String URL = "/categories";
+    private static final Long VALID_CATEGORY_ID = 1L;
+    private static final Long DELETE_CATEGORY_ID = 3L;
     private static MockMvc mockMvc;
-    private BookDto bookDto1;
-    private BookDto bookDto2;
-    private BookDto bookDto3;
-    private CreateBookRequestDto requestDto;
-
+    private CategoryDto categoryDto1;
+    private CategoryDto categoryDto2;
+    private CategoryDto categoryDto3;
+    private CategoryRequestDto requestDto;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -70,32 +68,19 @@ public class BookControllerTest {
 
     @BeforeEach
     void setUp() {
-        bookDto1 = new BookDto();
-        bookDto1.setTitle("1984");
-        bookDto1.setAuthor("G. Orwell");
-        bookDto1.setIsbn("9781234567897");
-        bookDto1.setPrice(BigDecimal.valueOf(5.95));
-        bookDto1.setCategories(Set.of(new Category()));
+        categoryDto1 = new CategoryDto();
+        categoryDto1.setId(1L);
+        categoryDto1.setName("Horror");
 
-        bookDto2 = new BookDto();
-        bookDto2.setTitle("Tarzan");
-        bookDto2.setAuthor("Tarzan");
-        bookDto2.setIsbn("9789876637889");
-        bookDto2.setPrice(BigDecimal.valueOf(7.95));
-        bookDto2.setCategories(Set.of(new Category()));
+        categoryDto2 = new CategoryDto();
+        categoryDto2.setId(2L);
+        categoryDto2.setName("Adventures");
 
-        bookDto3 = new BookDto();
-        bookDto3.setTitle("Lisova Mavka");
-        bookDto3.setAuthor("L. Ukrainka");
-        bookDto3.setIsbn("9781122334111");
-        bookDto3.setPrice(BigDecimal.valueOf(12.95));
-        bookDto3.setCategories(Set.of(new Category()));
+        categoryDto3 = new CategoryDto();
+        categoryDto3.setId(3L);
+        categoryDto3.setName("Fantasy");
 
-        requestDto = new CreateBookRequestDto();
-        requestDto.setTitle("Robinzon");
-        requestDto.setAuthor("Cruzo");
-        requestDto.setIsbn("9789877777889");
-        requestDto.setPrice(BigDecimal.valueOf(14.95));
+        requestDto = new CategoryRequestDto("Fantasy", null);
     }
 
     @AfterEach
@@ -111,48 +96,10 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("""
-            Get all books from database
-            """)
-    @WithMockUser(username = "user", roles = {"USER"})
-    void getAll_ThreeBooksInDb_ReturnsListOfThreeBookDto() throws Exception {
-        MvcResult result = mockMvc
-                .perform(get(URL).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-        List<BookDto> expected = List.of(bookDto1, bookDto2, bookDto3);
-        List<BookDto> actual = objectMapper.readValue(
-                        result.getResponse().getContentAsString(),
-                        new TypeReference<List<BookDto>>() {});
-
-        assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(expected, actual);
-    }
-
-    @Test
-    @DisplayName("""
-            Get book by id from database
-            """)
-    @WithMockUser(username = "user", roles = {"USER"})
-    void getBookById_ValidBookId_ReturnsBookDto() throws Exception {
-        MvcResult result = mockMvc
-                .perform(get(URL + "/{id}", VALID_BOOK_ID).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-        BookDto expected = bookDto1;
-        BookDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                BookDto.class);
-
-        assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(expected, actual);
-    }
-
-    @Test
-    @DisplayName("""
-            Create new book and save to database
+            Create category
             """)
     @WithMockUser(username = "user", roles = {"ADMIN"})
-    void createBook_ValidRequestDto_ReturnsBookDto() throws Exception {
+    void createCategory_ValidRequestDto_ReturnCategoryDto() throws Exception {
         String requestJson = objectMapper.writeValueAsString(requestDto);
         MvcResult result = mockMvc
                 .perform(post(URL)
@@ -161,16 +108,12 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        BookDto expected = new BookDto();
-        expected.setTitle(requestDto.getTitle());
-        expected.setAuthor(requestDto.getAuthor());
-        expected.setIsbn(requestDto.getIsbn());
-        expected.setPrice(requestDto.getPrice());
-        expected.setCategories(Set.of(new Category()));
+        CategoryDto expected = new CategoryDto();
+        expected.setId(categoryDto3.getId());
+        expected.setName(categoryDto3.getName());
 
-        BookDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                BookDto.class);
+        CategoryDto actual = objectMapper
+                .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
 
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual);
@@ -178,28 +121,66 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("""
-            Update book from database
+            Get all categories from database
+            """)
+    @WithMockUser(username = "user", roles = {"USER"})
+    void getAll_TwoCategoriesInDb_ReturnListOfTwoCategoryDto() throws Exception {
+        MvcResult result = mockMvc
+                .perform(get(URL)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<CategoryDto> expected = List.of(categoryDto1, categoryDto2);
+        List<CategoryDto> actual = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                new TypeReference<List<CategoryDto>>() {}
+        );
+
+        assertNotNull(actual);
+        EqualsBuilder.reflectionEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("""
+            Get category by id from database
+            """)
+    @WithMockUser(username = "user", roles = {"USER"})
+    void getCategoryById_ValidCategoryId_ReturnCategoryDto() throws Exception {
+        MvcResult result = mockMvc
+                .perform(get(URL + "/{id}", VALID_CATEGORY_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        CategoryDto expected = categoryDto3;
+
+        CategoryDto actual = objectMapper
+                .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
+
+        assertNotNull(actual);
+        EqualsBuilder.reflectionEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("""
+            Create category
             """)
     @WithMockUser(username = "user", roles = {"ADMIN"})
-    void updateBook_ValidRequestDto_ReturnsBookDto() throws Exception {
+    void updateCategory_ValidRequestDto_ReturnCategoryDto() throws Exception {
         String requestJson = objectMapper.writeValueAsString(requestDto);
         MvcResult result = mockMvc
-                .perform(put(URL + "/{id}", VALID_BOOK_ID)
+                .perform(put(URL + "/{id}", VALID_CATEGORY_ID)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        BookDto expected = new BookDto();
-        expected.setTitle(requestDto.getTitle());
-        expected.setAuthor(requestDto.getAuthor());
-        expected.setIsbn(requestDto.getIsbn());
-        expected.setPrice(requestDto.getPrice());
-        expected.setCategories(Set.of(new Category()));
+        CategoryDto expected = new CategoryDto();
+        expected.setName(categoryDto2.getName());
 
-        BookDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                BookDto.class);
+        CategoryDto actual = objectMapper
+                .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
 
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual);
@@ -207,37 +188,51 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("""
-            Delete book from database
+            Delete category by id from database
             """)
     @WithMockUser(username = "user", roles = {"ADMIN"})
-    void deleteBook_ValidId_StatusIsNoContent() throws Exception {
-        Long validBookId = 2L;
-        mockMvc.perform(delete(URL + "/{id}", validBookId)
+    void deleteCategory_ValidCategoryID_StatusIsNoContent() throws Exception {
+        mockMvc.perform(delete(URL + "/{id}", DELETE_CATEGORY_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("""
-            Search books by parameters
+            Create category
             """)
-    @WithMockUser(username = "user", roles = {"USER"})
-    void searchBook_ValidSearchParameters_ReturnsListOfBookDtos() throws Exception {
-        BookSearchParameters searchParameters =
-                new BookSearchParameters(new String[]{"Tarzan"}, null, null);
-        String requestJson = objectMapper.writeValueAsString(searchParameters);
+    @WithMockUser(username = "user", roles = {"ADMIN"})
+    void getBooksByCategoryId_ValidRequestDto_ReturnCategoryDto() throws Exception {
         MvcResult result = mockMvc
-                .perform(get(URL + "/search")
-                        .content(requestJson)
+                .perform(get(URL + "/{id}/books", VALID_CATEGORY_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<BookDto> expected = List.of(bookDto2);
-        List<BookDto> actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                new TypeReference<List<BookDto>>() {}
+        BookDtoWithoutCategoryIds book1 = new BookDtoWithoutCategoryIds(
+                "1984",
+                "G. Orwell",
+                "9781234567897",
+                BigDecimal.valueOf(5.95),
+                null,
+                null
         );
+        BookDtoWithoutCategoryIds book2 = new BookDtoWithoutCategoryIds(
+                "Tarzan",
+                "Tarzan",
+                "9789876637889",
+                BigDecimal.valueOf(7.95),
+                null,
+                null
+        );
+
+        List<BookDtoWithoutCategoryIds> expected = List.of(book1, book2);
+
+        List<BookDtoWithoutCategoryIds> actual = objectMapper
+                .readValue(
+                        result.getResponse().getContentAsString(),
+                        new TypeReference<List<BookDtoWithoutCategoryIds>>() {}
+                );
 
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual);

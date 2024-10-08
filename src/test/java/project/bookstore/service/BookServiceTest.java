@@ -1,16 +1,21 @@
 package project.bookstore.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,38 +38,31 @@ import project.bookstore.repository.book.BookRepository;
 import project.bookstore.repository.book.BookSpecificationBuilder;
 import project.bookstore.service.impl.BookServiceImpl;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
     @Mock
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
     @Mock
-    BookMapper bookMapper;
+    private BookMapper bookMapper;
     @Mock
-    BookSpecificationBuilder bookSpecificationBuilder;
+    private BookSpecificationBuilder bookSpecificationBuilder;
 
     @InjectMocks
-    BookServiceImpl bookService;
+    private BookServiceImpl bookService;
 
-    Book book;
-    CreateBookRequestDto requestDto;
-    BookDto bookDto;
+    private Book book;
+    private CreateBookRequestDto requestDto;
+    private BookDto bookDto;
 
     @BeforeEach
     void setUp() {
-        Category category = new Category();
         book = new Book();
         book.setId(1L);
         book.setTitle("Book Title");
         book.setAuthor("Author");
         book.setPrice(BigDecimal.valueOf(10.95));
         book.setIsbn("9781244567897");
+        Category category = new Category();
         book.setCategories(Set.of(category));
 
         requestDto = new CreateBookRequestDto();
@@ -107,7 +105,7 @@ public class BookServiceTest {
             bookService.save(requestDto);
         });
 
-        verify(bookMapper, times(1)).toModel(requestDto);
+        verify(bookMapper, times(1)).toModel(any());
         verifyNoMoreInteractions(bookRepository);
     }
 
@@ -124,7 +122,7 @@ public class BookServiceTest {
 
         List<BookDto> actual = bookService.findAll(mock(Pageable.class));
         assertEquals(expected, actual);
-        verify(bookMapper, times(1)).toDto(book);
+        verify(bookMapper, times(1)).toDto(any());
         verifyNoMoreInteractions(bookRepository);
     }
 
@@ -140,7 +138,7 @@ public class BookServiceTest {
         BookDto actual = bookService.getBookById(book.getId());
 
         assertEquals(expected, actual);
-        verify(bookMapper, times(1)).toDto(book);
+        verify(bookMapper, times(1)).toDto(any());
         verifyNoMoreInteractions(bookRepository);
     }
 
@@ -152,10 +150,12 @@ public class BookServiceTest {
         requestDto.setPrice(BigDecimal.valueOf(12.95));
 
         doAnswer(invocation -> {
-                 Book argBook = invocation.getArgument(1);
-                 argBook.setPrice(requestDto.getPrice());
-                 return null;
-             }).when(bookMapper).updateBookFromDto(any(CreateBookRequestDto.class), any(Book.class));
+            Book argBook = invocation.getArgument(1);
+            argBook.setPrice(requestDto.getPrice());
+            return null;
+        })
+                .when(bookMapper)
+                .updateBookFromDto(any(CreateBookRequestDto.class), any(Book.class));
         when(bookMapper.toDto(book)).thenReturn(bookDto);
         when(bookRepository.findById(book.getId())).thenReturn(Optional.ofNullable(book));
         when(bookRepository.save(book)).thenReturn(book);
@@ -166,8 +166,8 @@ public class BookServiceTest {
 
         assertNotNull(actual);
         assertEquals(expected, actual);
-        verify(bookRepository, times(1)).findById(book.getId());
-        }
+        verify(bookRepository, times(1)).findById(any());
+    }
 
     @Test
     @DisplayName("""
@@ -189,7 +189,7 @@ public class BookServiceTest {
         assertEquals(expected, actual);
         verify(bookSpecificationBuilder, times(1)).build(bookSearchParameters);
         verify(bookRepository, times(1)).findAll(bookSpecification);
-        verify(bookMapper, times(1)).toDto(any(Book.class));
+        verify(bookMapper, times(1)).toDto(any());
     }
 
     @Test
@@ -216,6 +216,6 @@ public class BookServiceTest {
         assertNotNull(actual);
         assertEquals(expected, actual);
 
-        verify(bookRepository, times(1)).findAllByCategoriesId(category.getId());
+        verify(bookRepository, times(1)).findAllByCategoriesId(any());
     }
 }

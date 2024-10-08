@@ -1,5 +1,12 @@
 package project.bookstore.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,24 +16,15 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.test.context.jdbc.Sql;
 import project.bookstore.model.Book;
 import project.bookstore.repository.book.BookRepository;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class BookRepositoryTest {
-    private final static Long BOOKS_CATEGORY_ID = 1L;
-    private final static Long BOOKS_CATEGORY_NOT_EXISTED_ID = 10L;
-    private final static int BOOKS_FROM_CATEGORY_ONE = 2;
+    private static final Long BOOKS_CATEGORY_ID = 1L;
+    private static final Long BOOKS_CATEGORY_NOT_EXISTED_ID = 10L;
+    private static final int BOOKS_FROM_CATEGORY_ONE = 2;
     @Autowired
     private BookRepository bookRepository;
 
@@ -51,7 +49,6 @@ public class BookRepositoryTest {
             );
         }
     }
-
 
     @Test
     @DisplayName("""
