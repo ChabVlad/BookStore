@@ -164,7 +164,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("""
-            Create category
+            Update category by id
             """)
     @WithMockUser(username = "user", roles = {"ADMIN"})
     void updateCategory_ValidRequestDto_ReturnCategoryDto() throws Exception {
@@ -199,7 +199,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("""
-            Create category
+            Get books by category id from database
             """)
     @WithMockUser(username = "user", roles = {"ADMIN"})
     void getBooksByCategoryId_ValidRequestDto_ReturnCategoryDto() throws Exception {
