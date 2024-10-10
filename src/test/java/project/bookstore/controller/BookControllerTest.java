@@ -58,7 +58,6 @@ public class BookControllerTest {
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-        tearDown(dataSource);
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
@@ -66,36 +65,7 @@ public class BookControllerTest {
                     new ClassPathResource("db/books/add-books-to-test-db.sql")
             );
         }
-    }
-
-    @BeforeEach
-    void setUp() {
-        bookDto1 = new BookDto();
-        bookDto1.setTitle("1984");
-        bookDto1.setAuthor("G. Orwell");
-        bookDto1.setIsbn("9781234567897");
-        bookDto1.setPrice(BigDecimal.valueOf(5.95));
-        bookDto1.setCategories(Set.of(new Category()));
-
-        bookDto2 = new BookDto();
-        bookDto2.setTitle("Tarzan");
-        bookDto2.setAuthor("Tarzan");
-        bookDto2.setIsbn("9789876637889");
-        bookDto2.setPrice(BigDecimal.valueOf(7.95));
-        bookDto2.setCategories(Set.of(new Category()));
-
-        bookDto3 = new BookDto();
-        bookDto3.setTitle("Lisova Mavka");
-        bookDto3.setAuthor("L. Ukrainka");
-        bookDto3.setIsbn("9781122334111");
-        bookDto3.setPrice(BigDecimal.valueOf(12.95));
-        bookDto3.setCategories(Set.of(new Category()));
-
-        requestDto = new CreateBookRequestDto();
-        requestDto.setTitle("Robinzon");
-        requestDto.setAuthor("Cruzo");
-        requestDto.setIsbn("9789877777889");
-        requestDto.setPrice(BigDecimal.valueOf(14.95));
+        createDto();
     }
 
     @AfterEach
@@ -158,7 +128,7 @@ public class BookControllerTest {
                 .perform(post(URL)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
 
         BookDto expected = new BookDto();
@@ -241,5 +211,34 @@ public class BookControllerTest {
 
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual);
+    }
+
+    private void createDto() {
+        bookDto1 = new BookDto();
+        bookDto1.setTitle("1984");
+        bookDto1.setAuthor("G. Orwell");
+        bookDto1.setIsbn("9781234567897");
+        bookDto1.setPrice(BigDecimal.valueOf(5.95));
+        bookDto1.setCategories(Set.of(new Category()));
+
+        bookDto2 = new BookDto();
+        bookDto2.setTitle("Tarzan");
+        bookDto2.setAuthor("Tarzan");
+        bookDto2.setIsbn("9789876637889");
+        bookDto2.setPrice(BigDecimal.valueOf(7.95));
+        bookDto2.setCategories(Set.of(new Category()));
+
+        bookDto3 = new BookDto();
+        bookDto3.setTitle("Lisova Mavka");
+        bookDto3.setAuthor("L. Ukrainka");
+        bookDto3.setIsbn("9781122334111");
+        bookDto3.setPrice(BigDecimal.valueOf(12.95));
+        bookDto3.setCategories(Set.of(new Category()));
+
+        requestDto = new CreateBookRequestDto();
+        requestDto.setTitle("Robinzon");
+        requestDto.setAuthor("Cruzo");
+        requestDto.setIsbn("9789877777889");
+        requestDto.setPrice(BigDecimal.valueOf(14.95));
     }
 }

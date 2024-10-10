@@ -54,6 +54,7 @@ public class BookController {
     @Operation(
             summary = "Create new book",
             description = "Create new book and add to db")
+    @ResponseStatus(HttpStatus.CREATED)
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookMapper.toDto(bookService.save(requestDto));
     }

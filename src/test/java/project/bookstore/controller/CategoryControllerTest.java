@@ -56,7 +56,6 @@ public class CategoryControllerTest {
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-        tearDown(dataSource);
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
@@ -64,23 +63,7 @@ public class CategoryControllerTest {
                     new ClassPathResource("db/books/add-books-to-test-db.sql")
             );
         }
-    }
-
-    @BeforeEach
-    void setUp() {
-        categoryDto1 = new CategoryDto();
-        categoryDto1.setId(1L);
-        categoryDto1.setName("Horror");
-
-        categoryDto2 = new CategoryDto();
-        categoryDto2.setId(2L);
-        categoryDto2.setName("Adventures");
-
-        categoryDto3 = new CategoryDto();
-        categoryDto3.setId(3L);
-        categoryDto3.setName("Fantasy");
-
-        requestDto = new CategoryRequestDto("Fantasy", null);
+        createDto();
     }
 
     @AfterEach
@@ -105,7 +88,7 @@ public class CategoryControllerTest {
                 .perform(post(URL)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
 
         CategoryDto expected = new CategoryDto();
@@ -236,5 +219,21 @@ public class CategoryControllerTest {
 
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual);
+    }
+
+    private void createDto() {
+        categoryDto1 = new CategoryDto();
+        categoryDto1.setId(1L);
+        categoryDto1.setName("Horror");
+
+        categoryDto2 = new CategoryDto();
+        categoryDto2.setId(2L);
+        categoryDto2.setName("Adventures");
+
+        categoryDto3 = new CategoryDto();
+        categoryDto3.setId(3L);
+        categoryDto3.setName("Fantasy");
+
+        requestDto = new CategoryRequestDto("Fantasy", null);
     }
 }

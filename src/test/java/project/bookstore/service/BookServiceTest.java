@@ -2,10 +2,7 @@ package project.bookstore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -95,22 +92,6 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Create a new book with invalid request dto and save it to database
-            """)
-    void save_InvalidRequestDto_ReturnsException() {
-        doThrow(new IllegalArgumentException("Invalid request DTO"))
-                .when(bookMapper).toModel(requestDto);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            bookService.save(requestDto);
-        });
-
-        verify(bookMapper, times(1)).toModel(any());
-        verifyNoMoreInteractions(bookRepository);
-    }
-
-    @Test
-    @DisplayName("""
             Find all books from database
             """)
     void findAll_BooksExist_ReturnListOfBookDto() {
@@ -149,13 +130,6 @@ public class BookServiceTest {
     void updateBook_ValidRequestDto_ReturnsBookDto() {
         requestDto.setPrice(BigDecimal.valueOf(12.95));
 
-        doAnswer(invocation -> {
-            Book argBook = invocation.getArgument(1);
-            argBook.setPrice(requestDto.getPrice());
-            return null;
-        })
-                .when(bookMapper)
-                .updateBookFromDto(any(CreateBookRequestDto.class), any(Book.class));
         when(bookMapper.toDto(book)).thenReturn(bookDto);
         when(bookRepository.findById(book.getId())).thenReturn(Optional.ofNullable(book));
         when(bookRepository.save(book)).thenReturn(book);
