@@ -16,7 +16,7 @@ public class CreateBookRequestDto {
     @NotBlank
     private String author;
     @NotBlank
-    @Pattern(regexp = "//d{13}", message = "Should be a valid ISBN number: 13 numbers only!")
+    @Pattern(regexp = "\\d{13}", message = "Should be a valid ISBN number: 13 numbers only!")
     private String isbn;
     @NotNull
     @PositiveOrZero
