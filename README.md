@@ -1,5 +1,3 @@
----
-
 # Book Store 
 
 Book Store is a comprehensive service for managing book purchases. It supports various operations including book catalog management, shopping cart functionality, and order processing.
