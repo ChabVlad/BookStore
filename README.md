@@ -1,7 +1,4 @@
-
----
-
-  #  Book Store Service
+# Book Store 
 
 Book Store is a comprehensive service for managing book purchases. It supports various operations including book catalog management, shopping cart functionality, and order processing.
 
@@ -82,6 +79,22 @@ Handles CRUD operations for shopping cart items.
 
 - **Java**: Ensure you have Java 17 installed.
 - **Docker**: Docker is required to run the project in a containerized environment.
+
+### Environment Variables Template
+
+To run the application, create a `.env` file in the root of your project and populate it with the following environment variables:
+
+```
+MYSQLDB_USER=user
+MYSQLDB_DATABASE=yourdb
+MYSQLDB_ROOT_PASSWORD=your_password
+MYSQLDB_LOCAL_PORT=3307
+MYSQLDB_DOCKER_PORT=3306
+
+SPRING_LOCAL_PORT=8088
+SPRING_DOCKER_PORT=8080
+DEBUG_PORT=5005
+```
 
 ### Steps to Run
 
